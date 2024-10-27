@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Multi-Marker AR Project</title>
+    <!-- Подключаем A-Frame -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- Подключаем AR.js с поддержкой паттерн-маркеров -->
+    <script src="https://cdn.jsdelivr.net/npm/ar.js@3.3.2/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs="trackingMethod: best;">
+      <!-- Загрузка ресурсов -->
+      <a-assets>
+        <!-- 3D-модель -->
+        <a-asset-item id="model" src="model/namaqualand_boulder_02_1k.gltf"></a-asset-item>
+
+        <!-- Аудиофайл -->
+        <audio id="audio" src="IcikCiperDimok.mp3"></audio>
+
+        <video id="video" src="Rick Astley - Never Gonna Give You Up (Official Music Video).mp4" crossorigin="anonymous" playsinline webkit-playsinline></video>
+      </a-assets>
+
+      <!-- Маркер 1: 3D-модель -->
+      <a-marker
+        type="pattern"
+        url="marker_model/pattern-i (1).patt"
+        emitevents="true"
+      >
+        <a-entity
+          gltf-model="#model"
+          scale="0.5 0.5 0.5"
+          position="0 0 0"
+          rotation="0 0 0"
+        ></a-entity>
+      </a-marker>
+
+      <!-- Маркер 2: Аудио -->
+      <a-marker
+        type="pattern"
+        url="marker_audio/pattern-1688403571_zefirka-club-p-bukva-ye-61.patt"
+        emitevents="true"
+      >
+        <a-entity
+          id="sound-entity"
+          sound="src: #audio; autoplay: false;"
+          position="0 0 0"
+        >
+          <!-- Можно добавить визуальный объект, например, куб -->
+          <a-box color="blue" depth="0.5" height="0.5" width="0.5"></a-box>
+        </a-entity>
+      </a-marker>
+
+      <!-- Маркер 3: Видео -->
+      <a-marker
+        type="pattern"
+        url="marker_model/pattern-bd3a7ca33789001a56f89bb4834df691.patt"
+        emitevents="true"
+      >
+        <a-video
+          id="video-plane"
+          src="#video"
+          position="0 0 0"
+          rotation="-90 0 0"
+          height="1"
+          width="1.78"
+        ></a-video>
+      </a-marker>
+
+
+      <!-- Камера -->
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      // Маркер 1: 3D-модель
+      const marker1 = document.querySelector('a-nft[url="marker1/marker"]');
+      const model = marker1.querySelector('[gltf-model]');
+      marker1.addEventListener('markerFound', () => {
+        console.log('Маркер 1 найден');
+        model.setAttribute('visible', 'true');
+      });
+      marker1.addEventListener('markerLost', () => {
+        console.log('Маркер 1 потерян');
+        model.setAttribute('visible', 'false');
+      });
+
+      // Маркер 2: Аудио
+      const marker2 = document.querySelector('a-nft[url="marker2/marker"]');
+      const soundEntity = marker2.querySelector('#sound-entity');
+      marker2.addEventListener('markerFound', () => {
+        console.log('Маркер 2 найден');
+        soundEntity.components.sound.playSound();
+      });
+      marker2.addEventListener('markerLost', () => {
+        console.log('Маркер 2 потерян');
+        soundEntity.components.sound.stopSound();
+      });
+
+      // Маркер 3: Видео
+      const marker3 = document.querySelector('a-nft[url="marker3/marker"]');
+      const video = document.querySelector('#video');
+      marker3.addEventListener('markerFound', () => {
+        console.log('Маркер 3 найден');
+        video.play();
+      });
+      marker3.addEventListener('markerLost', () => {
+        console.log('Маркер 3 потерян');
+        video.pause();
+      });
+    </script>
+  </body>
+</html>
+
+  
